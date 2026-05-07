@@ -40,17 +40,15 @@ class Libro(models.Model):
     Tiene relación N:1 con Autor y N:M con Categoria.
     """
 
-    # TODO: implementar los campos:
-    # titulo          → CharField
-    # isbn            → CharField (unique=True)
-    # fecha_publicacion → DateField
-    # cantidad_total  → PositiveIntegerField
-    # autor           → ForeignKey(Autor, on_delete=models.PROTECT)
-    # categorias      → ManyToManyField(Categoria)
-    #
-    # Preguntas guía:
-    # ¿Qué pasa si eliminás un autor que tiene libros? (PROTECT vs CASCADE)
-    # ¿Por qué isbn debe ser único?
+    titulo = models.CharField(max_length=255)
+    isbn = models.CharField(max_length=13, unique=True)
+    fecha_publicacion = models.DateField()
+    cantidad_total = models.PositiveIntegerField()
+    
+    # PROTECT: No deja borrar al Autor si tiene libros asociados.
+    autor = models.ForeignKey(Autor, on_delete=models.PROTECT)
+    # ManyToMany: Un libro puede tener varias categorías y viceversa.
+    categorias = models.ManyToManyField(Categoria)
 
     pass
 
@@ -85,11 +83,10 @@ class Prestamo(models.Model):
     Si fecha_devolucion es NULL → el préstamo está activo.
     """
 
-    # TODO: implementar los campos:
-    # libro              → ForeignKey(Libro, on_delete=models.CASCADE)
-    # nombre_prestatario → CharField
-    # fecha_prestamo     → DateField
-    # fecha_devolucion   → DateField (null=True, blank=True)
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    nombre_prestatario = models.CharField(max_length=100)
+    fecha_prestamo = models.DateField(default=timezone.now)
+    fecha_devolucion = models.DateField(null=True, blank=True)
     #
     # Preguntas guía:
     # ¿Por qué usamos CASCADE aquí y PROTECT en Libro→Autor?
