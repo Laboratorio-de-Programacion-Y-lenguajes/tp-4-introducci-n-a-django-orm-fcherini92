@@ -14,7 +14,6 @@ class Autor(models.Model):
     email = models.EmailField(unique=True)
     biografia = models.TextField(blank=True, null=True)
 
-    pass
 
     def __str__(self) -> str:
         return self.nombre
@@ -28,7 +27,6 @@ class Categoria(models.Model):
 
     nombre = models.CharField(max_length=100, unique=True)
 
-    pass
 
     def __str__(self) -> str:
         return self.nombre
@@ -50,7 +48,6 @@ class Libro(models.Model):
     # ManyToMany: Un libro puede tener varias categorías y viceversa.
     categorias = models.ManyToManyField(Categoria)
 
-    pass
 
     def prestamos_activos(self) -> int:
         """
@@ -58,23 +55,18 @@ class Libro(models.Model):
 
         Un préstamo es "activo" cuando no se ha registrado devolución.
         """
-        # TODO: implementar con ORM usando filter sobre los préstamos relacionados
-        # Pista: self.prestamo_set.filter(fecha_devolucion__isnull=True).count()
-        #        (o el related_name que hayas definido en Prestamo.libro)
-        raise NotImplementedError
+        return self.prestamo_set.filter(fecha_devolucion__isnull=True).count()
 
     def disponibles(self) -> int:
         """
         Retorna cuántas copias están disponibles:
         cantidad_total - prestamos_activos()
         """
-        # TODO: implementar
-        raise NotImplementedError
+        return self.cantidad_total - self.prestamos_activos()
 
     def tiene_disponibles(self) -> bool:
         """Retorna True si hay al menos una copia disponible."""
-        # TODO: implementar
-        raise NotImplementedError
+        return self.disponibles() > 0
 
 
 class Prestamo(models.Model):
@@ -93,5 +85,3 @@ class Prestamo(models.Model):
     # ¿Qué valor por defecto tendría sentido para fecha_prestamo?
     # Tip: podés usar default=timezone.now si querés fecha automática,
     #      o dejarlo sin default para que el test lo defina explícitamente.
-
-    pass
